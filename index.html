@@ -488,14 +488,6 @@
                     <button class="filter-btn" data-value="1">⭐</button>
                 </div>
             </div>
-            <div class="filter-row">
-                <span class="filter-label">是否在投：</span>
-                <div class="filter-group" id="investFilter">
-                    <button class="filter-btn active" data-value="all">全部</button>
-                    <button class="filter-btn" data-value="是">是</button>
-                    <button class="filter-btn" data-value="否">否</button>
-                </div>
-            </div>
         </div>
 
         <!-- 统计数据 -->
@@ -507,10 +499,6 @@
             <div class="stat-item blue">
                 <div class="stat-value" id="filteredCount">44</div>
                 <div class="stat-label">筛选结果</div>
-            </div>
-            <div class="stat-item green">
-                <div class="stat-value" id="investingCount">10</div>
-                <div class="stat-label">在投客户</div>
             </div>
         </div>
 
@@ -526,13 +514,9 @@
                             <th>品牌</th>
                             <th>主体名称</th>
                             <th>省份</th>
-                            <th>服务商</th>
-                            <th>在投</th>
                             <th>优先级</th>
                             <th>应用场景</th>
                             <th>客单价</th>
-                            <th>25年消耗</th>
-                            <th>26年YTD</th>
                             <th>备注</th>
                         </tr>
                     </thead>
@@ -602,8 +586,7 @@
                         !['广东', '北京', '上海', '浙江', '江苏'].includes(item.province) : 
                         item.province === filters.province);
                 const priorityMatch = filters.priority === 'all' || item.priority.toString() === filters.priority;
-                const investingMatch = filters.investing === 'all' || item.investing === filters.investing;
-                return typeMatch && provinceMatch && priorityMatch && investingMatch;
+                return typeMatch && provinceMatch && priorityMatch;
             });
 
             tbody.innerHTML = filteredData.map(item => `
@@ -612,25 +595,20 @@
                     <td class="brand-name">${item.brand}</td>
                     <td class="company-name">${item.company}</td>
                     <td>${item.province}</td>
-                    <td>${item.agent}</td>
-                    <td><span class="${item.investing === '是' ? 'status-yes' : 'status-no'}">${item.investing}</span></td>
                     <td class="priority-stars priority-${item.priority}">${'⭐'.repeat(item.priority)}</td>
                     <td class="scene-text">${item.scene}</td>
                     <td>${item.price || '-'}</td>
-                    <td class="cost-num ${item.cost25 && item.cost25 !== '/' ? 'highlight' : ''}">${item.cost25 || '-'}</td>
-                    <td class="cost-num ${item.cost26 && item.cost26 !== '/' ? 'highlight' : ''}">${item.cost26 || '-'}</td>
                     <td class="remark-text">${item.remark}</td>
                 </tr>
             `).join('');
 
             document.getElementById('filteredCount').textContent = filteredData.length;
             document.getElementById('resultCount').textContent = filteredData.length;
-            document.getElementById('investingCount').textContent = filteredData.filter(i => i.investing === '是').length;
         }
 
         function initFilters() {
-            ['typeFilter', 'provinceFilter', 'priorityFilter', 'investFilter'].forEach((id, idx) => {
-                const filterKey = ['type', 'province', 'priority', 'investing'][idx];
+            ['typeFilter', 'provinceFilter', 'priorityFilter'].forEach((id, idx) => {
+                const filterKey = ['type', 'province', 'priority'][idx];
                 document.getElementById(id).addEventListener('click', (e) => {
                     if (e.target.classList.contains('filter-btn')) {
                         document.getElementById(id).querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
